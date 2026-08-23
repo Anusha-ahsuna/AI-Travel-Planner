@@ -1,100 +1,43 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
 
-const { GoogleGenAI } = require("@google/genai");
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ error: 'GEMINI_API_KEY is not set in Vercel settings.' });
+  }
 
-const app = express();
+  const { destination, days, budget, travelType, activity } = req.body;
 
-app.use(cors());
-app.use(express.json());
-app.use(express.static(__dirname));
+  try {
+    const prompt = `Create a detailed ${days}-day travel itinerary for ${destination}. 
+    Budget: ${budget}. Travel style: ${travelType}. Activity preference: ${activity}.`;
 
-const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY
-});
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      }
+    );
 
-app.post("/generate-trip", async (req, res) => {
+    const data = await response.json();
 
-    try {
-
-        const {
-            destination,
-            days,
-            budget,
-            travelType,
-            activity
-        } = req.body;
-
-        if (!destination || !days || !budget) {
-            return res.status(400).json({
-                error: "Please enter destination, days and budget."
-            });
-        }
-
-const prompt = `
-You are a professional travel planner.
-
-Create a concise and attractive travel itinerary.
-
-Destination: ${destination}
-Number of Days: ${days}
-Budget: ₹${budget}
-Travel Type: ${travelType}
-Preferred Activity: ${activity}
-
-Include:
-
-1. Day-wise itinerary
-2. Estimated budget
-3. Famous places to visit
-4. Local foods to try
-5. Travel tips
-
-Return HTML structure only.
-
-Use only:
-<h3>
-<h4>
-<p>
-<ul>
-<li>
-<strong>
-
-Do NOT use:
-<style>
-style=""
-color
-background
-font
-CSS
-Markdown
-code fences
-`;
-        const response = await ai.models.generateContent({
-            model: "gemini-3.6-flash",
-            contents: prompt
-        });
-
-        console.log("Gemini response received");
-
-        res.json({
-            plan: response.text
-        });
-
-    } catch (error) {
-
-        console.error("Gemini Error:", error);
-
-        res.status(500).json({
-            error: "Failed to generate travel itinerary.",
-            details: error.message
-        });
+    if (!response.ok) {
+      return res.status(response.status).json({ error: data.error?.message || 'Gemini error' });
     }
-});
 
-const PORT = process.env.PORT || 3000;
+    const planText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No plan generated.';
+    
+    // Format newlines into HTML breaks for easy rendering
+    const formattedPlan = planText.replace(/\n/g, '<br>');
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+    return res.status(200).json({ plan: formattedPlan });
+  } catch (err) {
+    return res.status(500).json({ error: err.message || 'Internal Server Error' });
+  }
+}
