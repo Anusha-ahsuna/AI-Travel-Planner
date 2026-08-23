@@ -20,42 +20,49 @@ body{
    HEADER
 =========================== */
 
-header{
-    width:100%;
-    background:#0d6efd;
-    color:white;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:18px 8%;
-    position:fixed;
-    top:0;
-    z-index:1000;
-    box-shadow:0 2px 10px rgba(0,0,0,0.2);
+header {
+    width: 100%;
+    background: #0d6efd;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 8%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+.logo h2 {
+    font-size: 28px;
 }
 
-.logo h2{
-    font-size:28px;
+nav ul {
+    display: flex;
+    list-style: none;
 }
 
-nav ul{
-    display:flex;
-    list-style:none;
+nav ul li {
+    margin-left: 30px;
 }
 
-nav ul li{
-    margin-left:30px;
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    transition: .3s;
 }
 
-nav ul li a{
-    color:white;
-    text-decoration:none;
-    font-size:18px;
-    transition:.3s;
+nav ul li a:hover {
+    color: #ffc107;
 }
 
-nav ul li a:hover{
-    color:yellow;
+.menu-toggle {
+    display: none;
+    font-size: 26px;
+    cursor: pointer;
+    color: white;
 }
 
 /* ===========================
@@ -327,43 +334,42 @@ footer{
    RESPONSIVE DESIGN
 =========================== */
 
-@media(max-width:768px){
+@media (max-width: 768px) {
+    header {
+        padding: 15px 6%;
+    }
 
-header{
-    flex-direction:column;
-    padding:20px;
-}
+    .menu-toggle {
+        display: block; /* Show hamburger button on mobile */
+    }
 
-nav ul{
-    flex-wrap:wrap;
-    justify-content:center;
-    margin-top:15px;
-}
+    nav ul {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: #0d6efd;
+        flex-direction: column;
+        align-items: center;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease-in-out, padding 0.3s ease;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+    }
 
-nav ul li{
-    margin:10px;
-}
+    /* Active Class Triggered by JS */
+    nav ul.active {
+        max-height: 300px;
+        padding: 20px 0;
+    }
 
-.hero h1{
-    font-size:35px;
-}
+    nav ul li {
+        margin: 12px 0;
+    }
 
-.hero p{
-    font-size:17px;
-}
-
-.hero-content{
-    padding:25px;
-}
-
-.planner,
-.destinations,
-.about,
-.contact,
-.result{
-    padding:60px 6%;
-}
-
+    nav ul li a {
+        font-size: 18px;
+    }
 }
  #output h3 {
     color: #0d6efd; /* Blue */

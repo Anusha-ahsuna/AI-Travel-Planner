@@ -1,3 +1,37 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const navList = document.getElementById('nav-List');
+
+    if (mobileMenu && navList) {
+        const menuIcon = mobileMenu.querySelector('i');
+
+        mobileMenu.addEventListener('click', () => {
+            navList.classList.toggle('active');
+            
+            // Toggle icon if present
+            if (menuIcon) {
+                if (navList.classList.contains('active')) {
+                    menuIcon.classList.remove('fa-bars');
+                    menuIcon.classList.add('fa-xmark');
+                } else {
+                    menuIcon.classList.remove('fa-xmark');
+                    menuIcon.classList.add('fa-bars');
+                }
+            }
+        });
+
+        // Close menu on link click
+        document.querySelectorAll('nav ul li a').forEach(link => {
+            link.addEventListener('click', () => {
+                navList.classList.remove('active');
+                if (menuIcon) {
+                    menuIcon.classList.remove('fa-xmark');
+                    menuIcon.classList.add('fa-bars');
+                }
+            });
+        });
+    }
+});
 async function generatePlan() {
 
     const destination = document.getElementById("destination").value;
