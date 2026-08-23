@@ -368,16 +368,16 @@ nav ul li{
  #output h3 {
     color: #0d6efd; /* Blue */
     font-size: 22px;
-    margin-top: 20px;
-    margin-bottom: 12px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     border-bottom: 2px solid #eef4ff;
-    padding-bottom: 5px;
+    padding-bottom: 2px;
 }
 
  #output h4 {
     color: #084298;  
     font-size: 18px;
-    margin-top: 15px;
+    margin-top: 5px;
     margin-bottom: 8px;
 }
 
